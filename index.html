@@ -24,14 +24,14 @@
 				<td>{{ $value.Namamakanan}}</td>
 				<td>{{ $value.Jenishidangan }}</td>
 				<td>{{ $value.Hargamakanan }}</td>
-				<td><a type="button" class="btn btn-Danger" href="/delete?id={{ $key }}">Delete</a></td>
+				<td><a type="button" class="btn btn-Danger" href="/delete?id={{ $key }}">Delete</a><a style="margin-left: 10px;" type="button" class="btn btn-success" href="/edit?id={{ $key }}">Edit</a></td>
 			</tr>
 
 		{{end}}
 
 	</tbody>
 </table>
-<a type="button" class="btn btn-success" href="/tambahdata">Tambah Data</a>
+<a type="button" class="btn btn-primary" href="/tambahdata">Tambah Data</a>
 
 <script>$(document).ready(function() {
     $('#fancytable').DataTable();

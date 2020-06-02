@@ -96,11 +96,54 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", 301)
 }
 
+func Update(w http.ResponseWriter, r *http.Request) {
+	db := dbConn()
+	if r.Method == "POST" {
+		nama := r.FormValue("nama")
+		jenis := r.FormValue("jenis")
+		harga := r.FormValue("harga")
+		id := r.FormValue("id")
+		insForm, err := db.Prepare("UPDATE makanan SET nama_makanan=?, jenis_hidangan=?, harga_makanan=? WHERE Id=?")
+		if err != nil {
+			panic(err.Error())
+		}
+		insForm.Exec(nama, jenis, harga, id)
+		log.Println("Update: Nama: " + nama + " | Hidangan: " + jenis + " | Harga: " + harga)
+	}
+	defer db.Close()
+	http.Redirect(w, r, "/", 301)
+}
+
+func Edit(w http.ResponseWriter, r *http.Request) {
+	db := dbConn()
+	nId := r.URL.Query().Get("id")
+	selDB, err := db.Query("SELECT * FROM makanan WHERE id=?", nId)
+	if err != nil {
+		panic(err.Error())
+	}
+	makanans := make(map[int]makanan)
+	for selDB.Next() {
+		var id, harga int
+		var nama, hidangan string
+		err = selDB.Scan(&id, &nama, &hidangan, &harga)
+		if err != nil {
+			panic(err.Error())
+		}
+		makanans[id] = makanan{nama, hidangan, harga}
+	}
+	p := view{Judul: "Edit Data", Data: makanans}
+	t, _ := template.ParseFiles("Formedit.html")
+	fmt.Println(t.Execute(w, p))
+	defer db.Close()
+}
+
 func main() {
 	log.Println("Server started on: http://localhost:7050")
 	http.HandleFunc("/", Read)
 	http.HandleFunc("/add", Insert)
 	http.HandleFunc("/tambahdata", Tambahdata)
 	http.HandleFunc("/delete", Delete)
+	http.HandleFunc("/edit", Edit)
+	http.HandleFunc("/update", Update)
 	http.ListenAndServe(":7050", nil)
 }
