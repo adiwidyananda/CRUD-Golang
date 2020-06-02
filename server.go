@@ -83,10 +83,24 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", 301)
 }
 
+func Delete(w http.ResponseWriter, r *http.Request) {
+	db := dbConn()
+	emp := r.URL.Query().Get("id")
+	delForm, err := db.Prepare("DELETE FROM makanan WHERE id=?")
+	if err != nil {
+		panic(err.Error())
+	}
+	delForm.Exec(emp)
+	log.Println("DELETE")
+	defer db.Close()
+	http.Redirect(w, r, "/", 301)
+}
+
 func main() {
-	log.Println("Server started on: http://localhost:5050")
+	log.Println("Server started on: http://localhost:7050")
 	http.HandleFunc("/", Read)
 	http.HandleFunc("/add", Insert)
 	http.HandleFunc("/tambahdata", Tambahdata)
+	http.HandleFunc("/delete", Delete)
 	http.ListenAndServe(":7050", nil)
 }

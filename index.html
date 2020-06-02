@@ -1,6 +1,8 @@
 <head>
     <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
 </head>
 
@@ -12,6 +14,7 @@
 		<th>Nama Makanan</th>
 		<th>Jenis Hidangan</th>
 		<th>Harga Makanan</th>
+		<th>Option</th>
 	</thead>
 	<tbody>
 		{{ range $key, $value := .Data}}
@@ -21,12 +24,14 @@
 				<td>{{ $value.Namamakanan}}</td>
 				<td>{{ $value.Jenishidangan }}</td>
 				<td>{{ $value.Hargamakanan }}</td>
+				<td><a type="button" class="btn btn-Danger" href="/delete?id={{ $key }}">Delete</a></td>
 			</tr>
 
 		{{end}}
 
 	</tbody>
 </table>
+<a type="button" class="btn btn-success" href="/tambahdata">Tambah Data</a>
 
 <script>$(document).ready(function() {
     $('#fancytable').DataTable();
