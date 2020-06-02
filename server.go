@@ -59,9 +59,34 @@ func Read(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 }
 
+func Tambahdata(w http.ResponseWriter, r *http.Request) {
+	var x string
+	p := x
+	t, _ := template.ParseFiles("Formtambah.html")
+	fmt.Println(t.Execute(w, p))
+}
+
+func Insert(w http.ResponseWriter, r *http.Request) {
+	db := dbConn()
+	if r.Method == "POST" {
+		nama := r.FormValue("nama")
+		jenis := r.FormValue("jenis")
+		harga := r.FormValue("harga")
+		insForm, err := db.Prepare("INSERT INTO makanan(nama_makanan, jenis_hidangan, harga_makanan ) VALUES(?,?,?)")
+		if err != nil {
+			panic(err.Error())
+		}
+		insForm.Exec(nama, jenis, harga)
+		log.Println("INSERT: Nama: " + nama + " | Hidangan: " + jenis + " | Harga: " + harga)
+	}
+	defer db.Close()
+	http.Redirect(w, r, "/", 301)
+}
+
 func main() {
 	log.Println("Server started on: http://localhost:5050")
-	http.HandleFunc("/", new)
-	http.HandleFunc("/data", Read)
+	http.HandleFunc("/", Read)
+	http.HandleFunc("/add", Insert)
+	http.HandleFunc("/tambahdata", Tambahdata)
 	http.ListenAndServe(":7050", nil)
 }
